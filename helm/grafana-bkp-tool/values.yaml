@@ -1,0 +1,40 @@
+# Default values for grafana-bkp-tool.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+jobs:
+    name: grafana-backup-tool
+    image:
+      repository: docker.io/ysde/docker-grafana-backup-tool
+      tag: "latest"
+      imagePullPolicy: IfNotPresent
+    schedule: "0 3 * * *"
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Allow
+    restartPolicy: OnFailure
+    env:
+    - name: GRAFANA_URL
+      valueFrom:
+        secretKeyRef:
+          name: grafana-backup-tool
+          key: grafana-url
+    - name: GRAFANA_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: grafana-backup-tool
+          key: grafana-token
+    - name: AZURE_STORAGE_CONTAINER_NAME
+      valueFrom:
+        secretKeyRef:
+          name: grafana-backup-tool
+          key: azure-storage-container-name
+    - name: AZURE_STORAGE_CONNECTION_STRING
+      valueFrom:
+        secretKeyRef:
+          name: grafana-backup-tool
+          key: azure-storage-connection-string
+    securityContext:
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1337
+    
